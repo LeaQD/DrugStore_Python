@@ -3,7 +3,7 @@ import tkinter.messagebox
 from tkinter import *
 from tkinter import Label
 import sys
-import collections
+
 
 import tkinter.messagebox
 # import random
@@ -88,28 +88,19 @@ class Window1:
         user = (self.Username.get())
         pas = (self.Password.get())
         f = open('Acc.txt', 'r')
-        chain = collections.ChainMap() 
-        while True:
-            line = f.readline()
-            if line == "" :
-                break
-            if line != "\n":
-                s = line.split()
-                chain[s[0]] = s[1]
-        f.close()
-        list_key = list(chain.keys())
-        has = False
-        for key in list_key :
-            if key == user :
-                has = True
-        if not has:
-            self.Login_Sys = tkinter.messagebox.showwarning("Warning!", "Account don't exist!")
-        else:
-            if chain[user] == pas:    
-                self.newWindowM = Toplevel(self.master)
-                self.app = WindowM(self.master)
+        lines = f.readline()
+        for row in lines:
+            if row.find(user) == -1:
+                self.Login_Sys = tkinter.messagebox.showwarning("Warning!", "Account don't exist!")
             else:
-                self.Login_Sys = tkinter.messagebox.showwarning("Warning!", "Incorrect password!")
+                row_in = lines.index(lines)
+                p = open('Pass.txt', 'r')
+                passline = p.readline(row_in+1)
+                pas1 = passline[row_in]
+                if pas == pas1:
+                    self.app = WindowR(self.master)
+                else:
+                    self.Login_Sys = tkinter.messagebox.showwarning("Warning!", "Incorrect password!")
 
 
 class WindowR:
@@ -162,14 +153,13 @@ class WindowR:
     def check_ResN(self):
         usen = (self.Username.get())
         f = open('Acc.txt', 'r')
-        lines = f.readlines()
-        has = False
+        lines = f.readline()
+        has = 0
         for row in lines:
-            s = row.split(" ")
-            print(s[0])
-            if usen == s[0]: 
-                has = True
-        if has:
+            if row == usen:
+                has = 1
+                break
+        if has == 1:
             self.check_ResN = tkinter.messagebox.showwarning("Warning!", "This user name has exist!")
             self.Username.set("")
             self.Password1.set("")
@@ -188,9 +178,11 @@ class WindowR:
             f = open('Acc.txt', 'a')
             f.write("\n")
             f.write(usen)
-            f.write(" ")
-            f.write(pas1)
             f.close()
+            p = open('Pass.txt', 'a')
+            p.write("\n")
+            p.write(pas1)
+            p.close()
             self.master.destroy()
         else:
             self.check_ResPa = tkinter.messagebox.showerror("Registration Systems", "Re-enter your password")
@@ -201,15 +193,15 @@ class WindowR:
 class WindowM:
     def __init__(self, master):
         # title and size++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self.master1 = master
-        self.master1.title("Manager Systems")
+        self.master = master
+        self.master.title("Manager Systems")
         # Label++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self.frame_label1 = Frame(self.master1, height=200, width=800)
-        self.frame_label1.grid(row=0, column=0, )
+        self.frame_label = Frame(self.master, height=200, width=800)
+        self.frame_label.grid(row=0, column=0, )
 
-        self.LabelTitle1 = Label(self.frame_label1, text="Manager Systems", font=("Calibre", 30, 'bold'))
-        #self.LabelTitle.grid(row=0, column=0, )
-     
+        self.LabelTitle = Label(self.frame_label, text="Manager Systems", font=("Calibre", 30, 'bold'))
+        self.LabelTitle.grid(row=0, column=0, )
+
 
 def main():
     root = Tk()

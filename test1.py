@@ -1,11 +1,11 @@
-import tkinter
+# import tkinter
 import tkinter.messagebox
 from tkinter import *
 from tkinter import Label
 import sys
-import collections
 
-import tkinter.messagebox
+
+# import tkinter.messagebox
 # import random
 # import time
 # import datetime
@@ -64,7 +64,8 @@ class Window1:
         self.frame4.grid(row=5, column=0, pady=10)
 
         self.btnLogin = Button(self.frame2, text="Login", font=("Calibre", 18, 'bold'),
-                               command=self.Login_Sys)
+                                    command=self.login_window
+                                    )
         self.btnLogin.grid(row=0, column=0)
 
         self.btnRegistration = Button(self.frame3, text="Registration", font=("Calibre", 18, 'bold'),
@@ -74,43 +75,87 @@ class Window1:
         self.btnExit = Button(self.frame4, text="Exit", font=("Calibre", 15, 'bold'), command=self.quit)
         self.btnExit.grid(row=1, column=0)
 
-    # quit++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # quit
     def quit(self):
         sys.exit()
-
-    # registration window++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    def login_window(self):
+        self.newWindow = Toplevel(self.master)
+        self.app = WindowL(self.newWindow)
+    # registration window
     def registration_window(self):
         self.newWindow = Toplevel(self.master)
         self.app = WindowR(self.newWindow)
 
-    # Login++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # Login
     def Login_Sys(self):
         user = (self.Username.get())
-        pas = (self.Password.get())
-        f = open('Acc.txt', 'r')
-        chain = collections.ChainMap() 
-        while True:
-            line = f.readline()
-            if line == "" :
-                break
-            if line != "\n":
-                s = line.split()
-                chain[s[0]] = s[1]
-        f.close()
-        list_key = list(chain.keys())
-        has = False
-        for key in list_key :
-            if key == user :
-                has = True
-        if not has:
-            self.Login_Sys = tkinter.messagebox.showwarning("Warning!", "Account don't exist!")
-        else:
-            if chain[user] == pas:    
-                self.newWindowM = Toplevel(self.master)
-                self.app = WindowM(self.master)
-            else:
-                self.Login_Sys = tkinter.messagebox.showwarning("Warning!", "Incorrect password!")
+        pas = (self.Passwosd.get())
 
+class WindowL:
+    def __init__(self, master):
+        # title and size++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        self.master = master
+        self.master.title("Login Systems")
+        # master.geometry('1000x800+0+0')
+        # Label++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        self.frame_label = Frame(self.master, height=200, width=800)
+        self.frame_label.grid(row=0, column=0, )
+
+        self.LabelTitle = Label(self.frame_label, text="Registration Systems", font=("Calibre", 30, 'bold'))
+        self.LabelTitle.grid(row=0, column=0, )
+        # Button++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        self.frame1 = Frame(self.master, height=600, width=800, bd=10, relief='ridge')
+        self.frame1.grid(row=1, column=0, padx=10, pady=10)
+
+        self.Username = StringVar()
+        self.Password1 = StringVar()
+        self.Password2 = StringVar()
+
+        self.lblUsername = Label(self.frame1, text="Username", font=("Calibre", 15, 'bold'), bd=10)
+        self.lblUsername.grid(row=0, column=0)
+        self.txtUsername = Entry(self.frame1, font=("Calibre", 15, 'bold'), bd=10,
+                                 textvariable=self.Username)
+        self.txtUsername.grid(row=0, column=1, pady=10)
+
+        self.lblPassword1 = Label(self.frame1, text="Password", font=("Calibre", 15, 'bold'), bd=10)
+        self.lblPassword1.grid(row=1, column=0)
+        self.txtPassword1 = Entry(self.frame1, font=("Calibre", 15, 'bold'), show="*", bd=10,
+                                  textvariable=self.Password1)
+        self.txtPassword1.grid(row=1, column=1, pady=10)
+
+        self.lblPassword2 = Label(self.frame1, text="ReEnter", font=("Calibre", 15, 'bold'), bd=10)
+        self.lblPassword2.grid(row=2, column=0)
+        self.txtPassword2 = Entry(self.frame1, font=("Calibre", 15, 'bold'), show="*", bd=10,
+                                  textvariable=self.Password2)
+        self.txtPassword2.grid(row=2, column=1, pady=10)
+
+        # Confirm++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        self.frame2 = Frame(self.master, height=200, width=800, bd=10, relief='ridge')
+        self.frame2.grid(row=3, column=0)
+        self.btnConfirm = Button(self.frame2, text="Confirm", font=("Calibre", 15, 'bold'),
+                                 command=self.check_Res)
+        self.btnConfirm.grid(row=0, column=0, )
+
+    # Confirm Res
+    def check_Res(self):
+
+        usen = (self.Username.get())
+        pas1 = (self.Password1.get())
+        pas2 = (self.Password2.get())
+
+        if pas1 == pas2:
+            self.check_Res = tkinter.messagebox.showinfo("Registration Systems", "Congratulation")
+            f = open('Acc_and_Pass.txt', 'a')
+            f.write("\n")
+            f.write(usen)
+            f.write(" ")
+            f.write(pas1)
+            f.close()
+            self.master.destroy()
+        else:
+            self.check_Res = tkinter.messagebox.showerror("Registration Systems", "Re-enter your password")
+            self.Password1.set("")
+            self.Password2.set("")
 
 class WindowR:
     def __init__(self, master):
@@ -154,38 +199,19 @@ class WindowR:
         self.frame2 = Frame(self.master, height=200, width=800, bd=10, relief='ridge')
         self.frame2.grid(row=3, column=0)
         self.btnConfirm = Button(self.frame2, text="Confirm", font=("Calibre", 15, 'bold'),
-                                 command=self.check_ResN)
+                                 command=self.check_Res)
         self.btnConfirm.grid(row=0, column=0, )
 
-    # Confirm Res++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # Check name++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    def check_ResN(self):
-        usen = (self.Username.get())
-        f = open('Acc.txt', 'r')
-        lines = f.readlines()
-        has = False
-        for row in lines:
-            s = row.split(" ")
-            print(s[0])
-            if usen == s[0]: 
-                has = True
-        if has:
-            self.check_ResN = tkinter.messagebox.showwarning("Warning!", "This user name has exist!")
-            self.Username.set("")
-            self.Password1.set("")
-            self.Password2.set("")
-        else:
-            f.close()
-            self.check_ResP()
+    # Confirm Res
+    def check_Res(self):
 
-    # Check pass++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    def check_ResP(self):
         usen = (self.Username.get())
         pas1 = (self.Password1.get())
         pas2 = (self.Password2.get())
+
         if pas1 == pas2:
-            self.check_ResPa = tkinter.messagebox.showinfo("Registration Systems", "Congratulation")
-            f = open('Acc.txt', 'a')
+            self.check_Res = tkinter.messagebox.showinfo("Registration Systems", "Congratulation")
+            f = open('Acc_and_Pass.txt', 'a')
             f.write("\n")
             f.write(usen)
             f.write(" ")
@@ -193,23 +219,10 @@ class WindowR:
             f.close()
             self.master.destroy()
         else:
-            self.check_ResPa = tkinter.messagebox.showerror("Registration Systems", "Re-enter your password")
+            self.check_Res = tkinter.messagebox.showerror("Registration Systems", "Re-enter your password")
             self.Password1.set("")
             self.Password2.set("")
 
-
-class WindowM:
-    def __init__(self, master):
-        # title and size++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self.master1 = master
-        self.master1.title("Manager Systems")
-        # Label++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self.frame_label1 = Frame(self.master1, height=200, width=800)
-        self.frame_label1.grid(row=0, column=0, )
-
-        self.LabelTitle1 = Label(self.frame_label1, text="Manager Systems", font=("Calibre", 30, 'bold'))
-        #self.LabelTitle.grid(row=0, column=0, )
-     
 
 def main():
     root = Tk()
